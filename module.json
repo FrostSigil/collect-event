@@ -1,0 +1,13 @@
+{
+    "name": "collect-event-rewards",
+    "author": "FrostSigil",
+    "description": "Automatic collection of rewards for time in the game",
+    "options": {
+        "cliName": "Collect event rewards",
+        "guiName": "Collect event rewards",
+        "reloadable": true
+    },
+    "servers": ["https://raw.githubusercontent.com/FrostSigil/collect-event/master/"],
+    "version": "10/06/2023",
+    "disableAutoUpdate": false
+}

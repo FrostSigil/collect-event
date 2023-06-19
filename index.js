@@ -6,7 +6,6 @@ module.exports = function collectreward(mod) {
 	let timer1 = null;
 	let timer2 = null;
 	let timer3 = null;
-	let timerOff = false;
 
 	if (mod.majorPatchVersion >= 92) {
 		[
@@ -24,14 +23,16 @@ module.exports = function collectreward(mod) {
 
 	mod.hook("C_RETURN_TO_LOBBY", "raw", () => {
 		if (mod.dispatch.headless) return;
-		if (Date.now() - lasttimemoved >= 3600000) {
-			timerOff = false;
-		} return false;
+		if (Date.now() - lasttimemoved >= 3600000) return false;
 	});
 
 	mod.hook("S_PLAYTIME_EVENT_REWARD_DATA", 1, event => {
 		playTimeRew = event;
 		mod.setTimeout(() => checkPlayTime(event), 2000);
+		clearTimeout(timer1);
+		timer1 = setTimeout(() => {
+			mod.send("C_REQUEST_PLAYTIME", 1, {});
+		}, 5 * 60 * 1000 + 5000);
 	});
 
 	function checkPlayTime() {
@@ -48,15 +49,8 @@ module.exports = function collectreward(mod) {
 					mod.setTimeout(() => {
 						sendPlayTime(row, column);
 					}, (index + 1) * 1000);
-				} else if (!timerOff) {
-					clearTimeout(timer1);
-					timer1 = setTimeout(() => {
-						checkPlayTime();
-					}, 5 * 60 * 1000 + 5000);
 				}
 			});
-		} else {
-			mod.send("C_REQUEST_PLAYTIME", 1, {});
 		}
 	}
 
@@ -80,12 +74,12 @@ module.exports = function collectreward(mod) {
 		if (row === 2) {
 			clearTimeout(timer2);
 			timer2 = setTimeout(() => {
-				checkPlayTime();
+				mod.send("C_REQUEST_PLAYTIME", 1, {});
 			}, 30 * 60 * 1000 + 5000);
 		} else if (row === 1) {
-			clearTimeout(timer3); timerOff = true;
+			clearTimeout(timer3);
 			timer3 = setTimeout(() => {
-				checkPlayTime();
+				mod.send("C_REQUEST_PLAYTIME", 1, {});
 			}, 5 * 60 * 60 * 1000 + 5000);
 		}
 	}

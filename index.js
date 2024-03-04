@@ -23,6 +23,7 @@ module.exports = function collectreward(mod) {
 
 	mod.command.add("creward", () => {
 		mod.send("C_REQUEST_PLAYTIME", 1, {});
+		mod.command.message("Start check reward.");
 	});
 
 	mod.dispatch.addDefinition("C_REQUEST_CONTRACT", 50, [
@@ -101,7 +102,7 @@ module.exports = function collectreward(mod) {
 				mod.setTimeout(() => bankTabChange(event.container, event.offset), 25);
 			} else {
 				cCancelContract();
-				mod.log("ERROR: No left space in bank.");
+				mod.command.message("ERROR: No left space in bank.");
 			}
 		});
 	}
@@ -122,7 +123,7 @@ module.exports = function collectreward(mod) {
 		const hooks = mod.hookOnce("S_VIEW_WARE_EX", "*", () => {
 			mod.unhook(hooks);
 			cCancelContract();
-			mod.log("Placed the item in the bank.");
+			mod.command.message("Placed the item in the bank.");
 		});
 
 		mod.send("C_PUT_WARE_ITEM", 3, {

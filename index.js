@@ -21,6 +21,10 @@ module.exports = function collectreward(mod) {
 		);
 	}
 
+	mod.command.add("creward", () => {
+		mod.send("C_REQUEST_PLAYTIME", 1, {});
+	});
+
 	mod.dispatch.addDefinition("C_REQUEST_CONTRACT", 50, [
 		["name", "refString"],
 		["data", "refBytes"],

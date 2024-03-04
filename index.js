@@ -15,7 +15,7 @@ module.exports = function collectreward(mod) {
 	if (mod.majorPatchVersion >= 92) {
 		[
 			"C_RECEIVE_PLAYTIME_EVENT_REWARD",
-			"C_GET_WARE_ITEM"
+			"C_PUT_WARE_ITEM"
 		].forEach(name =>
 			mod.dispatch.addOpcode(name, mod.dispatch.connection.metadata.maps.protocol[name], true)
 		);
@@ -31,19 +31,6 @@ module.exports = function collectreward(mod) {
 		["data", "bytes"]
 	]);
 	
-	mod.dispatch.addDefinition("C_GET_WARE_ITEM", 4, [
-		["gameId", "int64"],
-		["container", "int32"],
-		["offset", "int32"],
-		["money", "int64"],
-		["fromSlot", "int32"],
-		["dbid", "uint64"],
-		["id", "int32"],
-		["amount", "int32"],
-		["unk1", "int32"],
-		["unk2", "int32"]
-	]);
-
 	mod.hook("S_REQUEST_CONTRACT", 1, e => {
 		contract = e.id;
 		contractType = e.type;
@@ -134,7 +121,7 @@ module.exports = function collectreward(mod) {
 			mod.log("Placed the item in the bank.");
 		});
 
-		mod.send("C_PUT_WARE_ITEM", 4, {
+		mod.send("C_PUT_WARE_ITEM", 3, {
 			gameId: mod.game.me.gameId,
 			container: container,
 			offset: offset,

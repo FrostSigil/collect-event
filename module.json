@@ -8,6 +8,6 @@
         "reloadable": true
     },
     "servers": ["https://raw.githubusercontent.com/FrostSigil/collect-event/master/"],
-    "version": "3/3/2024",
+    "version": "3/2/2025",
     "disableAutoUpdate": false
 }

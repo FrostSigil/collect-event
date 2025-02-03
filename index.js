@@ -1,7 +1,7 @@
 module.exports = function collectreward(mod) {
 
 	mod.game.initialize("inventory");
-	
+
 	const voucher = [155780];
 	const playTime = {};
 	let playTimeRew = {};
@@ -12,10 +12,14 @@ module.exports = function collectreward(mod) {
 	let timer2 = null;
 	let timer3 = null;
 
+	if (mod.dispatch.connection.integrity === undefined) {
+		mod.error("Error: Unsupported Toolbox version.");
+		return;
+	}
+
 	if (mod.majorPatchVersion >= 92) {
 		[
-			"C_RECEIVE_PLAYTIME_EVENT_REWARD",
-			"C_PUT_WARE_ITEM"
+			"C_RECEIVE_PLAYTIME_EVENT_REWARD"
 		].forEach(name =>
 			mod.dispatch.addOpcode(name, mod.dispatch.connection.metadata.maps.protocol[name], true)
 		);
@@ -26,6 +30,11 @@ module.exports = function collectreward(mod) {
 		mod.command.message("Start check reward.");
 	});
 
+	mod.dispatch.addDefinition("C_RECEIVE_PLAYTIME_EVENT_REWARD", 1, [
+		["row", "int32"],
+		["column", "int32"]
+	], true);
+
 	mod.dispatch.addDefinition("C_REQUEST_CONTRACT", 50, [
 		["name", "refString"],
 		["data", "refBytes"],
@@ -34,8 +43,8 @@ module.exports = function collectreward(mod) {
 		["value", "int32"],
 		["name", "string"],
 		["data", "bytes"]
-	]);
-	
+	], true);
+
 	mod.hook("S_REQUEST_CONTRACT", 1, e => {
 		contract = e.id;
 		contractType = e.type;
@@ -118,7 +127,7 @@ module.exports = function collectreward(mod) {
 			data: buffer
 		});
 	}
-	
+
 	function bankItem(container, offset, item, amount) {
 		const hooks = mod.hookOnce("S_VIEW_WARE_EX", "*", () => {
 			mod.unhook(hooks);
